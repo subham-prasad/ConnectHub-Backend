@@ -1,16 +1,20 @@
+// console.log("Cloudinary.ts loaded");
+
 import { v2 as cloudinary } from "cloudinary";
 import fs from "fs";
 
 
-cloudinary.config({
-  cloud_name: process.env.CLOUDINAY_CLOUD_NAME,
-  api_key: process.env.CLOUDINAY_API_KEY,
-  api_secret: process.env.CLOUDINAY_API_SECRET,
-});
+
 
 //study cloudinary response log
 
-const uploadOnCloudinary = async (localFilePath: string): Promise<any>=> {
+const uploadOnCloudinary = async (localFilePath: string): Promise<any> => {
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
   try {
     if (!localFilePath) return null;
 
@@ -25,7 +29,12 @@ const uploadOnCloudinary = async (localFilePath: string): Promise<any>=> {
 
     return response;
   } catch (error) {
-    fs.unlinkSync(localFilePath); //remove the locally saved data then only move forward for anything
+    console.error("Cloudinary upload failed:", error);
+    if (fs.existsSync(localFilePath)) {
+      fs.unlinkSync(localFilePath);
+    }
+
+    throw error; //remove the locally saved data then only move forward for anything
   }
 };
 

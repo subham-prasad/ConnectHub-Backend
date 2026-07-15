@@ -19,7 +19,7 @@ app.use(cookieParser());
 
 import UserRouter from "./routes/user.routes.js";
 
-app.use("/api/v1/users", UserRouter);
+app.use("/api/v1/user", UserRouter);
 
 app.get("/", (req, res) => {
   res.send("connect Hub Backend is running");
