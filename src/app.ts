@@ -3,12 +3,18 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import { Request, Response, NextFunction } from "express";
 import { ApiError } from "./utils/ApiError.js";
+import dotenv from "dotenv";
 
 const app = express();
 
+dotenv.config();
+
+console.log("CORS_ORIGIN:", process.env.CORS_ORIGIN);
+console.log("hoiii")
 app.use(
   cors({
     origin: process.env.CORS_ORIGIN,
+    // credentials: true,
   })
 );
 

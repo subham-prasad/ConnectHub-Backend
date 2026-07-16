@@ -45,6 +45,12 @@ const registerUser = asyncHandler(async (req, res) => {
   try {
     const { userName, fullName, email, password, bio } = req.body;
 
+    // console.log("userName: ",userName);
+    // console.log("fullName: ", fullName);
+    // console.log("email: ", email);
+    // console.log("password: ", password);
+
+
     if (
       [fullName, userName, email, password].some(
         (field) => !field || field.trim() === ""
@@ -95,7 +101,9 @@ const registerUser = asyncHandler(async (req, res) => {
       );
     }
 
-    return res.status(200).json(new ApiResponse(200, "User got registered"));
+    return res
+      .status(200)
+      .json(new ApiResponse(200, "User got registered", createdUser));
   } catch (error: any) {
     throw new ApiError(500, error.message || "Something went worng");
   }
@@ -103,6 +111,10 @@ const registerUser = asyncHandler(async (req, res) => {
 
 const loginUser = asyncHandler(async (req, res) => {
   const { userName, email, password } = req.body;
+
+  console.log(userName)
+  console.log(password);
+
 
   //take details
   //check it
