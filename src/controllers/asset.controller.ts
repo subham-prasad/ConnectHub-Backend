@@ -43,6 +43,8 @@ export const uploadAsset = async (
 ) => {
   const files = req.files as Express.Multer.File[];
 
+  //   console.log("This is the console for files:", files);
+
   for (const file of files) {
     const detectedType = await fileTypeFromFile(file.path);
 
@@ -74,9 +76,10 @@ export const uploadAsset = async (
 
     const uploadedData: CloudinaryResponse[] = [];
 
-    console.log("This is the post assests: ", postAssets);
+    // console.log("This is the post assests: ", postAssets);
 
     for (const pa of postAssets) {
+      //   console.log("Uploading:", pa.originalname);
       const uploadedAssetOnCloud = await uploadOnCloudinary(
         pa?.path,
         folderPath
