@@ -24,8 +24,10 @@ app.use(express.static("public"));
 app.use(cookieParser());
 
 import UserRouter from "./routes/user.routes.js";
+import PostRouter from "./routes/post.routes.js"
 
 app.use("/api/v1/user", UserRouter);
+app.use("/api/v1/post", PostRouter);
 
 app.get("/", (req, res) => {
   res.send("connect Hub Backend is running");

@@ -8,18 +8,20 @@ import fs from "fs";
 
 //study cloudinary response log
 
-const uploadOnCloudinary = async (localFilePath: string): Promise<any> => {
+const uploadOnCloudinary = async (localFilePath: string, folderPath: string): Promise<any> => {
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
+  secure: true
 });
   try {
     if (!localFilePath) return null;
 
     const response = await cloudinary.uploader.upload(localFilePath, {
       resource_type: "auto",
+      folder: folderPath
     });
 
     //file upload is successfull

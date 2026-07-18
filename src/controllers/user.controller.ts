@@ -9,6 +9,7 @@ import { uploadOnCloudinary } from "../utils/Cloudinary.js";
 import jwt from "jsonwebtoken";
 import { Types } from "mongoose";
 import bcrypt from "bcrypt";
+import { ASSETS_PATHS } from "../types/global.types.js";
 
 const generateAccessAndRefreshToken = async (
   UserID: Types.ObjectId | string
@@ -50,7 +51,6 @@ const registerUser = asyncHandler(async (req, res) => {
     // console.log("email: ", email);
     // console.log("password: ", password);
 
-
     if (
       [fullName, userName, email, password].some(
         (field) => !field || field.trim() === ""
@@ -75,9 +75,12 @@ const registerUser = asyncHandler(async (req, res) => {
       throw new ApiError(404, "Profile Pic is missing");
     }
 
-    const avatar = await uploadOnCloudinary(avatarLocalPath);
+    const avatar = await uploadOnCloudinary(
+      avatarLocalPath,
+      ASSETS_PATHS.avatarAssetPath
+    );
 
-    console.log("this is the avatar", avatar);
+    // console.log("this is the avatar", avatar);
 
     const user = await User.create({
       fullName,
@@ -110,17 +113,15 @@ const registerUser = asyncHandler(async (req, res) => {
 });
 
 const loginUser = asyncHandler(async (req, res) => {
-  const { userName, email, password } = req.body;
+  const { userName, password } = req.body;
 
-  console.log(userName)
-  console.log(password);
-
+  
 
   //take details
   //check it
   //check the passwor
 
-  if (!userName && !email) {
+  if (!userName) {
     throw new ApiError(
       400,
       "Both UserName and Email Is missing please enter that"
@@ -128,7 +129,7 @@ const loginUser = asyncHandler(async (req, res) => {
   }
 
   const user = (await User.findOne({
-    $or: [{ userName }, { email }],
+    $or: [{ userName }, { email: userName }],
   })) as any;
 
   if (!user) {
@@ -209,7 +210,10 @@ const updateAvatarImage = asyncHandler(async (req, res) => {
 
   //   console.log("This is new avatar Image:", newAvatarImage);
 
-  const avatar = await uploadOnCloudinary(newAvatarImage);
+  const avatar = await uploadOnCloudinary(
+    newAvatarImage,
+    ASSETS_PATHS.avatarAssetPath
+  );
 
   const user = await User.findByIdAndUpdate(
     req.user!._id,
@@ -353,19 +357,15 @@ const updatePassword = asyncHandler(async (req, res) => {
       throw new ApiError(400, "The current password is wrong...");
     }
 
-   user.password = newPassword ;
+    user.password = newPassword;
 
-   await user.save({
-    validateBeforeSave: false
-   })
-
-   
+    await user.save({
+      validateBeforeSave: false,
+    });
 
     return res
       .status(200)
-      .json(
-        new ApiResponse(200, "Password Changed Successfully")
-      );
+      .json(new ApiResponse(200, "Password Changed Successfully"));
   } catch (error: any) {
     console.error(error);
     throw new ApiError(
